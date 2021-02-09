@@ -1,0 +1,40 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Tab 1
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-button (click)="click()" expand="block" fill="clear" shape="round">
+    Click me
+  </ion-button>
+  <ion-button (click)="clickBrowser()" expand="block" fill="clear" shape="round">
+    Open Browser
+  </ion-button>
+  <ion-button (click)="service.getDeviceData()" expand="block" fill="clear" shape="round">
+    Device Info
+  </ion-button>
+  <ion-button (click)="getAlert()" expand="block" fill="clear" shape="round">
+    Alert Click
+  </ion-button>
+  <ion-button (click)="shareData()" expand="block" fill="clear" shape="round">
+    Share
+  </ion-button>
+  <ion-button (click)="showActionSheet()" expand="block" fill="clear" shape="round">
+    Action Sheet
+  </ion-button>
+  <ion-button (click)="loginFacebook()" expand="block" fill="clear" shape="round">
+    FaceBook Login
+  </ion-button>
+  <ion-button (click)="logoutFacebook()" expand="block" fill="clear" shape="round">
+    FaceBook Logout
+  </ion-button>
+  <ion-button (click)="googleSignup()" expand="block" fill="clear" shape="round">
+    Google Login
+  </ion-button>
+  <ion-button (click)="showPopup()" expand="block" fill="clear" shape="round">
+    Show Popup
+  </ion-button>
+</ion-content>

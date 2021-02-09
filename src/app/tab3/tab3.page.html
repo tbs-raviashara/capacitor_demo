@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-row class="ion-margin">
+    <ion-col size="2.5">
+      <ion-avatar>
+        <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+      </ion-avatar>
+    </ion-col>
+    <ion-col size="9.5" class="ion-padding-start">
+      <p class="ion-no-margin">Kawsar Ahmed</p>
+      <p class="ion-no-margin">+880 153169353232</p>
+      <p class="ion-no-margin">Member Since: 2 Sep 2019</p>
+    </ion-col>
+  </ion-row>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item lines="none">
+      <ion-icon slot="start" name="person-add" size="small" color="medium"></ion-icon>
+      <ion-label>Invite Friends</ion-label>
+    </ion-item>
+
+    <ion-item lines="none" *ngFor="let item of menu" (click)="menuClick(item)">
+      <ion-icon slot="start" [name]="item?.icon" size="small" color="medium"></ion-icon>
+      <ion-label>{{item?.title}}</ion-label>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-icon slot="start" name="power" size="small" color="medium"></ion-icon>
+      <ion-label>Logout</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

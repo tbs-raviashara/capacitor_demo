@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      BLE Connect
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="scan()">
+        Scan {{isScanOn ? 'On' : 'Off'}}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let item of devices" (click)="clickToConnect(item)">
+      <ion-label>
+        <h2>
+          {{ item?.name || 'Unnamed' }}</h2>
+        {{ item?.id }} RSSI: {{ item?.rssi }}
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item>
+      <ion-label>{{ statusMessage }}</ion-label>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>
