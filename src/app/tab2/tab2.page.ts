@@ -11,6 +11,7 @@ export class Tab2Page {
   public devices: any = [];
   public statusMessage: any;
   public isScanOn: boolean = false;
+  public peripheral: any = {};
   constructor(public navCtrl: NavController,
     private ble: BLE,
     private ngZone: NgZone,
@@ -62,8 +63,63 @@ export class Tab2Page {
   }
 
   clickToConnect(val: any) {
-    console.log(val);
-    this.navCtrl.navigateForward('details', { state: val })
+    console.log('clickToConnect', val);
+    this.setStatus('Connecting to ' + val.name || val.id);
+    this.ble.connect(val.id).subscribe(
+      peripheral => this.onConnected(peripheral),
+      peripheral => this.onDeviceDisconnected(peripheral)
+    );
   }
 
+  onConnected(peripheral: any) {
+    console.log('peripheral', peripheral);
+    this.ngZone.run(() => {
+      this.setStatus('');
+      this.peripheral = peripheral;
+    });
+
+    this.peripheral = peripheral;
+    this.setStatus('Connected to ' + (peripheral.name || peripheral.id));
+
+    // starting to get notification for each notified data on given characterstic id 
+    this.ble.startNotification(this.peripheral.id, 'SERVICE_ID', 'CHARACTERSITC_ID').subscribe(
+      data => this.onDataChange(data)
+    )
+
+    // Read the current value of the characteristic
+    this.ble.read(this.peripheral.id, 'SERVICE_ID', 'CHARACTERSITC_ID').then(
+      data => this.onReadData(data)
+    )
+  }
+
+  onDataChange(buffer: ArrayBuffer) {
+    var data = new Uint8Array(buffer);
+    // You will get the notification data here
+    console.log(data);
+  }
+
+  onReadData(buffer: ArrayBuffer) {
+    var data = new Uint8Array(buffer);
+    // You will get the read data here
+    console.log(data);
+  }
+
+  onDeviceDisconnected(peripheral: any) {
+    this.toastCtrl.create({
+      message: 'The peripheral unexpectedly disconnected',
+      duration: 3000,
+      position: 'bottom'
+    }).then((toast: any) => {
+      toast.present();
+    });
+
+  }
+
+  // Disconnect peripheral when leaving the page
+  ionViewWillLeave() {
+    console.log('ionViewWillLeave disconnecting Bluetooth');
+    this.ble.disconnect(this.peripheral.id).then(
+      () => console.log('Disconnected ', this.peripheral),
+      () => console.log('ERROR disconnecting', this.peripheral));
+  }
 }
