@@ -8,6 +8,7 @@ import { NavController, ToastController } from '@ionic/angular';
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page {
+  public isConnected: boolean = false;
   public devices: any = [];
   public statusMessage: any;
   public isScanOn: boolean = false;
@@ -34,6 +35,10 @@ export class Tab2Page {
       );
 
       setTimeout(this.setStatus.bind(this), 5000, "Scan complete");
+    } else {
+      if (this.isConnected) {
+        this.ionViewWillLeave();
+      }
     }
   }
 
@@ -73,6 +78,7 @@ export class Tab2Page {
 
   onConnected(peripheral: any) {
     console.log('peripheral', peripheral);
+    this.isConnected = true;
     this.ngZone.run(() => {
       this.setStatus('');
       this.peripheral = peripheral;
@@ -82,12 +88,12 @@ export class Tab2Page {
     this.setStatus('Connected to ' + (peripheral.name || peripheral.id));
 
     // starting to get notification for each notified data on given characterstic id 
-    this.ble.startNotification(this.peripheral.id, 'SERVICE_ID', 'CHARACTERSITC_ID').subscribe(
+    this.ble.startNotification(this.peripheral.id, this.peripheral.characteristics[0].service, this.peripheral.characteristics[0].characteristic).subscribe(
       data => this.onDataChange(data)
     )
 
     // Read the current value of the characteristic
-    this.ble.read(this.peripheral.id, 'SERVICE_ID', 'CHARACTERSITC_ID').then(
+    this.ble.read(this.peripheral.id, this.peripheral.characteristics[0].service, this.peripheral.characteristics[0].characteristic).then(
       data => this.onReadData(data)
     )
   }
@@ -119,7 +125,11 @@ export class Tab2Page {
   ionViewWillLeave() {
     console.log('ionViewWillLeave disconnecting Bluetooth');
     this.ble.disconnect(this.peripheral.id).then(
-      () => console.log('Disconnected ', this.peripheral),
+      () => {
+        console.log('Disconnected ', this.peripheral)
+        this.setStatus('Disconnected to ' + (this.peripheral.name || this.peripheral.id));
+        this.isConnected = false;
+      },
       () => console.log('ERROR disconnecting', this.peripheral));
   }
 }
