@@ -19,8 +19,16 @@ export class Tab2Page {
     private toastCtrl: ToastController) { }
 
   ionViewDidEnter() {
-    console.log('ionViewDidEnter');
-    this.scan();
+    this.ble.isEnabled().then((item: any) => {
+      this.scan();
+    }).catch(async (item: any) => {
+      let toast = await this.toastCtrl.create({
+        message: "Bluetooth is disabled.",
+        position: "top",
+        duration: 5000
+      });
+      toast.present();
+    });
   }
 
   scan() {
@@ -29,12 +37,12 @@ export class Tab2Page {
       this.setStatus("Scanning for Bluetooth LE Devices");
       this.devices = []; // clear list
 
-      this.ble.scan([], 5).subscribe(
+      this.ble.scan([], 10).subscribe(
         device => this.onDeviceDiscovered(device),
         error => this.scanError(error)
       );
 
-      setTimeout(this.setStatus.bind(this), 5000, "Scan complete");
+      setTimeout(this.setStatus.bind(this), 10000, "Scan complete");
     } else {
       if (this.isConnected) {
         this.ionViewWillLeave();
@@ -88,12 +96,12 @@ export class Tab2Page {
     this.setStatus('Connected to ' + (peripheral.name || peripheral.id));
 
     // starting to get notification for each notified data on given characterstic id 
-    this.ble.startNotification(this.peripheral.id, this.peripheral.characteristics[0].service, this.peripheral.characteristics[0].characteristic).subscribe(
+    this.ble.startNotification(this.peripheral.id, 'FF10', 'FF11').subscribe(
       data => this.onDataChange(data)
     )
 
     // Read the current value of the characteristic
-    this.ble.read(this.peripheral.id, this.peripheral.characteristics[0].service, this.peripheral.characteristics[0].characteristic).then(
+    this.ble.read(this.peripheral.id, 'FF10', 'FF11').then(
       data => this.onReadData(data)
     )
   }
